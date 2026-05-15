@@ -80,10 +80,9 @@ Output:  error, normal variables in let expression
 ## Project Structure
 
 ```
-.
 ├── tokenizer.py        # Lexical analysis: source → tokens
 ├── parser.py           # Parsing: tokens → AST
-├── interpreter.py      # Semantic checks + evaluation (main entry point)
+├── interpreter.py      # Semantic checks + evaluation
 ```
 
 Each module can also be run standalone for debugging:
@@ -96,4 +95,3 @@ echo "let x = 1;" | python3 parser.py      # prints AST nodes
 ## Requirements
 
 - Python 3.6+
-- No external packages
