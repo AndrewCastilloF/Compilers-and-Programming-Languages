@@ -84,7 +84,6 @@ Output:  error, normal variables in let expression
 ├── tokenizer.py        # Lexical analysis: source → tokens
 ├── parser.py           # Parsing: tokens → AST
 ├── interpreter.py      # Semantic checks + evaluation (main entry point)
-└── test_interpreter.py # Regression tests for all sample cases
 ```
 
 Each module can also be run standalone for debugging:
