@@ -1,4 +1,4 @@
-# Simple Integer Language Interpreter
+# Interpreter For a Toy Language
 
 A recursive-descent interpreter for a simple integer assignment language, built in Python 3 with no external dependencies. The pipeline is split across three stages — tokenizer, parser, and interpreter — each in its own module.
 
@@ -15,8 +15,6 @@ echo "let x = 1; y = 2; z = x + y;" | python3 interpreter.py
 ```
 
 ## Language
-
-A program is a sequence of assignment statements. All variables are integers.
 
 Two kinds of assignments:
 
@@ -94,12 +92,6 @@ Each module can also be run standalone for debugging:
 ```bash
 echo "let x = 1;" | python3 tokenizer.py   # prints token stream
 echo "let x = 1;" | python3 parser.py      # prints AST nodes
-```
-
-## Running Tests
-
-```bash
-python3 test_interpreter.py
 ```
 
 ## Requirements

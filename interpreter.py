@@ -1,28 +1,20 @@
 """
-interpreter.py - Semantic analysis and execution for the simple integer assignment language.
+interpreter.py - Semantic analysis and execution for the toy language.
 
 Responsibilities:
     1. Detect use of uninitialized variables.
     2. Detect normal (non-let) variables used inside a let expression.
     3. Evaluate all assignments in order.
     4. Print each variable's final value as "name = value".
-
-Usage:
-    python3 interpreter.py < program.txt
 """
 
 import sys
-
 from parser import (
     parse,
     AssignNode, BinOpNode, UnaryOpNode, LiteralNode, IdentNode
 )
 
-
-# ---------------------------------------------------------------------------
 # Interpreter
-# ---------------------------------------------------------------------------
-
 class Interpreter:
     def __init__(self):
         # Maps variable name → integer value for all assigned variables
@@ -39,8 +31,7 @@ class Interpreter:
         for name in self.order:
             print(f"{name} = {self.env[name]}")
 
-    # --- Statement execution ---
-
+    # Statement execution
     def _exec_assignment(self, node):
         if node.is_let:
             # Validate RHS before evaluating: no normal variables allowed
@@ -55,8 +46,7 @@ class Interpreter:
         if node.is_let:
             self.let_vars.add(node.name)
 
-    # --- Let expression checker ---
-
+    # Let expression checker
     def _check_let_expr(self, node):
         """
         Walk the expression tree and raise an error if:
@@ -79,8 +69,7 @@ class Interpreter:
             self._check_let_expr(node.left)
             self._check_let_expr(node.right)
 
-    # --- Expression evaluator ---
-
+    # Expression evaluator
     def _eval(self, node):
         if isinstance(node, LiteralNode):
             return node.value
@@ -100,14 +89,9 @@ class Interpreter:
             if node.op == '+': return l + r
             if node.op == '-': return l - r
             if node.op == '*': return l * r
-
         raise RuntimeError(f"Unknown AST node: {type(node)}")
 
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
+# main
 def main():
     source = sys.stdin.read()
     try:

@@ -1,5 +1,5 @@
 """
-tokenizer.py - Lexical analysis for the simple integer assignment language.
+tokenizer.py - Lexical analysis for the toy language.
 
 Tokens:
     LET    : 'let'
@@ -14,11 +14,9 @@ Tokens:
     RPAREN : ')'
     EOF    : end of input
 """
+import sys
 
-# ---------------------------------------------------------------------------
 # Token types
-# ---------------------------------------------------------------------------
-
 TT_LET    = 'LET'
 TT_IDENT  = 'IDENT'
 TT_NUM    = 'NUM'
@@ -31,11 +29,7 @@ TT_LPAREN = 'LPAREN'
 TT_RPAREN = 'RPAREN'
 TT_EOF    = 'EOF'
 
-
-# ---------------------------------------------------------------------------
 # Token class
-# ---------------------------------------------------------------------------
-
 class Token:
     def __init__(self, ttype, value):
         self.ttype = ttype
@@ -44,11 +38,7 @@ class Token:
     def __repr__(self):
         return f'Token({self.ttype}, {self.value!r})'
 
-
-# ---------------------------------------------------------------------------
 # Tokenizer
-# ---------------------------------------------------------------------------
-
 def tokenize(source):
     """
     Scan source string and return a list of Token objects.
@@ -58,14 +48,13 @@ def tokenize(source):
     tokens = []
     i = 0
     n = len(source)
-
     while i < n:
-        # --- Skip whitespace ---
+        # Skip whitespace
         if source[i].isspace():
             i += 1
             continue
 
-        # --- Identifier or keyword ---
+        # Identifier or keyword
         if source[i].isalpha() or source[i] == '_':
             j = i
             while j < n and (source[j].isalnum() or source[j] == '_'):
@@ -78,7 +67,7 @@ def tokenize(source):
             i = j
             continue
 
-        # --- Numeric literal ---
+        # Numeric literal
         if source[i].isdigit():
             j = i
             while j < n and source[j].isdigit():
@@ -87,7 +76,7 @@ def tokenize(source):
             i = j
             continue
 
-        # --- Single-character tokens ---
+        # Single-character tokens
         ch = source[i]
         if   ch == '=': tokens.append(Token(TT_ASSIGN, '='))
         elif ch == ';': tokens.append(Token(TT_SEMI,   ';'))
@@ -104,12 +93,8 @@ def tokenize(source):
     return tokens
 
 
-# ---------------------------------------------------------------------------
-# Run tokenizer standalone for debugging:  python3 tokenizer.py < program.txt
-# ---------------------------------------------------------------------------
-
+# debugging  python3 tokenizer.py < program.txt
 if __name__ == '__main__':
-    import sys
     source = sys.stdin.read()
     try:
         tokens = tokenize(source)

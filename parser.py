@@ -1,5 +1,5 @@
 """
-parser.py - Parsing and AST construction for the simple integer assignment language.
+parser.py - Parsing and AST construction for the toy language.
 
 Grammar:
     Program     : Assignment*
@@ -22,17 +22,14 @@ AST Nodes:
     IdentNode(name)                  name: str
 """
 
+import sys
 from tokenizer import (
     tokenize,
     TT_LET, TT_IDENT, TT_NUM, TT_ASSIGN, TT_SEMI,
     TT_PLUS, TT_MINUS, TT_STAR, TT_LPAREN, TT_RPAREN, TT_EOF
 )
 
-
-# ---------------------------------------------------------------------------
 # AST node definitions
-# ---------------------------------------------------------------------------
-
 class AssignNode:
     """Represents one assignment statement."""
     def __init__(self, is_let, name, expr):
@@ -84,10 +81,8 @@ class IdentNode:
         return f'IdentNode({self.name!r})'
 
 
-# ---------------------------------------------------------------------------
-# Recursive-descent parser
-# ---------------------------------------------------------------------------
 
+# Recursive-descent parser
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -110,16 +105,12 @@ class Parser:
         self.pos += 1
         return tok
 
-    # --- Program ---
-
     def parse_program(self):
         """Program : Assignment*"""
         stmts = []
         while self.peek().ttype != TT_EOF:
             stmts.append(self.parse_assignment())
         return stmts
-
-    # --- Assignment ---
 
     def parse_assignment(self):
         """
@@ -138,8 +129,7 @@ class Parser:
         self.consume(TT_SEMI)
         return AssignNode(is_let, name_tok.value, expr)
 
-    # --- Exp (left-recursive → iterative) ---
-
+    # Exp (left-recursive → iterative)
     def parse_exp(self):
         """Exp : Exp + Term | Exp - Term | Term"""
         node = self.parse_term()
@@ -149,8 +139,7 @@ class Parser:
             node  = BinOpNode(op, node, right)
         return node
 
-    # --- Term (left-recursive → iterative) ---
-
+    # Term (left-recursive → iterative)
     def parse_term(self):
         """Term : Term * Fact | Fact"""
         node = self.parse_fact()
@@ -160,8 +149,7 @@ class Parser:
             node  = BinOpNode(op, node, right)
         return node
 
-    # --- Fact ---
-
+    # Fact
     def parse_fact(self):
         """Fact : ( Exp ) | - Fact | + Fact | Literal | Identifier"""
         tok = self.peek()
@@ -196,28 +184,18 @@ class Parser:
         if tok.ttype == TT_IDENT:
             self.consume(TT_IDENT)
             return IdentNode(tok.value)
-
         raise SyntaxError(
             f"Unexpected token in expression: {tok.ttype} ({tok.value!r})"
         )
 
-
-# ---------------------------------------------------------------------------
-# Convenience function
-# ---------------------------------------------------------------------------
-
+# Wraps the two-step process of tokenizing then parsing into a single call.
 def parse(source):
     """Tokenize source and return a list of AssignNode AST nodes."""
     tokens = tokenize(source)
     return Parser(tokens).parse_program()
 
-
-# ---------------------------------------------------------------------------
-# Run parser standalone for debugging:  python3 parser.py < program.txt
-# ---------------------------------------------------------------------------
-
+# debugging  python3 parser.py < program.txt
 if __name__ == '__main__':
-    import sys
     source = sys.stdin.read()
     try:
         stmts = parse(source)
